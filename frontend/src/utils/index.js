@@ -36,10 +36,28 @@ export const debounce = (func, wait) => {
 export const formatDate = (dateString) => {
   const date = new Date(dateString);
   const now = new Date();
-  const diffTime = Math.abs(now - date);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  // Set both dates to start of day for accurate day comparison
+  const dateStart = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const nowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+  const diffTime = nowStart - dateStart;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 0) return 'Today';
+  if (diffDays === 0) {
+    // For today, show time if it's different from now
+    const timeDiff = now - date;
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (hours === 0 && minutes < 60) {
+      if (minutes < 5) return 'Just now';
+      return `${minutes} minutes ago`;
+    }
+    if (hours < 24) return `${hours} hours ago`;
+    return 'Today';
+  }
+  
   if (diffDays === 1) return 'Yesterday';
   if (diffDays < 7) return `${diffDays} days ago`;
   if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
@@ -151,6 +169,23 @@ export const generateTagColor = () => {
   ];
   
   return colors[Math.floor(Math.random() * colors.length)];
+};
+
+// Calculate if text should be light or dark based on background color
+export const getContrastTextColor = (backgroundColor) => {
+  // Remove # if present
+  const hex = backgroundColor.replace('#', '');
+  
+  // Convert to RGB
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  
+  // Calculate luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  
+  // Return dark text for light backgrounds, light text for dark backgrounds
+  return luminance > 0.5 ? '#000000' : '#ffffff';
 };
 
 // Validate snippet data
@@ -315,6 +350,7 @@ const utils = {
   truncateText,
   getCodePreview,
   generateTagColor,
+  getContrastTextColor,
   validateSnippet,
   searchSnippets,
   filterSnippets,

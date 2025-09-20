@@ -634,6 +634,15 @@ pre {
   outline-offset: 2px;
 }
 
+/* Utility classes */
+.divide-x > * + * {
+  border-left: 1px solid var(--border-primary);
+}
+
+.divide-border-primary > * + * {
+  border-left-color: var(--border-primary);
+}
+
 /* App Layout */
 .app {
   min-height: 100vh;

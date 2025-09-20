@@ -1,5 +1,5 @@
 import React from 'react';
-import { getLanguageColor, getCodePreview, formatDate, copyToClipboard } from '../utils';
+import { getLanguageColor, getCodePreview, formatDate, copyToClipboard, getContrastTextColor } from '../utils';
 
 const SnippetCard = ({ 
   snippet, 
@@ -56,7 +56,10 @@ const SnippetCard = ({
         <div className="flex justify-between items-center mb-3">
           <span 
             className="badge badge-primary"
-            style={{ backgroundColor: getLanguageColor(snippet.language) }}
+            style={{ 
+              backgroundColor: getLanguageColor(snippet.language),
+              color: getContrastTextColor(getLanguageColor(snippet.language))
+            }}
           >
             {snippet.language}
           </span>
@@ -81,7 +84,7 @@ const SnippetCard = ({
                 className="badge text-xs"
                 style={{ 
                   backgroundColor: tag.color,
-                  color: '#ffffff'
+                  color: getContrastTextColor(tag.color)
                 }}
               >
                 {tag.name}
