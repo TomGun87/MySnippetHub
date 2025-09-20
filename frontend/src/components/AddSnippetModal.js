@@ -146,7 +146,11 @@ const AddSnippetModal = ({ snippet, onClose, onSave }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={(e) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    }}>
       <div className="modal add-snippet-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{isEditing ? 'Edit Snippet' : 'Add New Snippet'}</h2>
@@ -250,8 +254,12 @@ const AddSnippetModal = ({ snippet, onClose, onSave }) => {
                     <button
                       type="button"
                       className="btn btn-sm btn-ghost"
-                      onClick={() => handleRemoveTag(tag.id)}
-                      style={{ padding: '0 2px', minWidth: 'auto' }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleRemoveTag(tag.id);
+                      }}
+                      style={{ padding: '0 4px', minWidth: 'auto', lineHeight: 1 }}
                     >
                       ×
                     </button>

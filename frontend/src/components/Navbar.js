@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
   return (
@@ -17,9 +18,22 @@ const Navbar = () => {
 
           {/* Navigation Items */}
           <div className="navbar-nav">
-            <div className="nav-item">
-              <span className="nav-text text-accent">Dashboard</span>
-            </div>
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => 
+                `nav-item ${isActive ? 'nav-item-active' : ''}`
+              }
+            >
+              <span className="nav-text">📝 Dashboard</span>
+            </NavLink>
+            <NavLink 
+              to="/analytics" 
+              className={({ isActive }) => 
+                `nav-item ${isActive ? 'nav-item-active' : ''}`
+              }
+            >
+              <span className="nav-text">📊 Analytics</span>
+            </NavLink>
           </div>
 
           {/* Version Badge */}

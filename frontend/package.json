@@ -12,7 +12,9 @@
     "react-diff-view": "^3.3.2",
     "react-dom": "^19.1.1",
     "react-hot-toast": "^2.6.0",
+    "react-router-dom": "^7.9.1",
     "react-scripts": "5.0.1",
+    "react-tagcloud": "^2.3.3",
     "recharts": "^3.2.1",
     "web-vitals": "^2.1.4"
   },

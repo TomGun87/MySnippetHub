@@ -10,6 +10,7 @@ const Dashboard = () => {
   const [filteredSnippets, setFilteredSnippets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
   // Filter and search state
   const [searchQuery, setSearchQuery] = useState('');
@@ -86,20 +87,36 @@ const Dashboard = () => {
   };
 
   const handleDeleteSnippet = async (snippetId) => {
+    if (actionLoading) return;
+    
+    if (!window.confirm('Are you sure you want to delete this snippet?')) {
+      return;
+    }
+    
     try {
+      setActionLoading(true);
       await api.snippets.delete(snippetId);
       await fetchSnippets();
     } catch (err) {
       console.error('Error deleting snippet:', err);
+      alert('Failed to delete snippet. Please try again.');
+    } finally {
+      setActionLoading(false);
     }
   };
 
   const handleToggleFavorite = async (snippetId) => {
+    if (actionLoading) return;
+    
     try {
+      setActionLoading(true);
       await api.favorites.toggle(snippetId);
       await fetchSnippets();
     } catch (err) {
       console.error('Error toggling favorite:', err);
+      alert('Failed to update favorite. Please try again.');
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -163,12 +180,14 @@ const Dashboard = () => {
             <button 
               className="btn btn-secondary"
               onClick={() => setShowAddModal(true)}
+              disabled={actionLoading}
             >
               ✨ Add AI Response
             </button>
             <button 
               className="btn btn-primary"
               onClick={() => setShowAddModal(true)}
+              disabled={actionLoading}
             >
               + Add Snippet
             </button>
@@ -282,7 +301,11 @@ const Dashboard = () => {
 
       {/* Simple Detail Modal Placeholder */}
       {selectedSnippet && (
-        <div className="modal-overlay" onClick={() => setSelectedSnippet(null)}>
+        <div className="modal-overlay" onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            setSelectedSnippet(null);
+          }
+        }}>
           <div className="modal p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
               <h3>{selectedSnippet.title}</h3>
@@ -317,10 +340,25 @@ const Dashboard = () => {
               >
                 📋 Copy
               </button>
-              <button className="btn btn-secondary">
+              <button 
+                className="btn btn-secondary"
+                onClick={() => {
+                  handleEditSnippet(selectedSnippet);
+                  setSelectedSnippet(null);
+                }}
+                disabled={actionLoading}
+              >
                 ✏️ Edit
               </button>
-              <button className="btn btn-ghost">
+              <button 
+                className={`btn btn-ghost ${actionLoading ? 'loading' : ''}`}
+                onClick={() => {
+                  handleToggleFavorite(selectedSnippet.id);
+                  setSelectedSnippet(null);
+                }}
+                disabled={actionLoading}
+              >
+                {actionLoading && <div className="spinner mr-2"></div>}
                 {selectedSnippet.is_favorite ? '💙' : '🤍'} Favorite
               </button>
             </div>
