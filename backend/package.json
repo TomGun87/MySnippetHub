@@ -11,7 +11,9 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "testMatch": ["**/src/tests/**/*.test.js"],
+    "testMatch": [
+      "**/src/tests/**/*.test.js"
+    ],
     "collectCoverageFrom": [
       "src/**/*.js",
       "!src/tests/**",
@@ -32,6 +34,7 @@
     "dotenv": "^17.2.2",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
+    "multer": "^2.0.2",
     "nodemon": "^3.1.10",
     "sqlite3": "^5.1.7"
   },

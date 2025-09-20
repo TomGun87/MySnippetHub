@@ -1,4 +1,5 @@
 import React from 'react';
+import { Highlight, themes } from 'prism-react-renderer';
 import { getLanguageColor, getCodePreview, formatDate, copyToClipboard, getContrastTextColor } from '../utils';
 
 const SnippetCard = ({ 
@@ -70,9 +71,35 @@ const SnippetCard = ({
       </div>
       
       <div className="code-preview mb-4">
-        <pre className="text-sm">
-          <code>{getCodePreview(snippet.content, 4)}</code>
-        </pre>
+        <Highlight
+          theme={themes.vsDark}
+          code={getCodePreview(snippet.content, 4)}
+          language={snippet.language || 'text'}
+        >
+          {({ className, style, tokens, getLineProps, getTokenProps }) => (
+            <pre 
+              className={`${className} card-code-preview`}
+              style={{
+                ...style,
+                margin: 0,
+                padding: 'var(--space-sm)',
+                fontSize: 'var(--font-size-sm)',
+                lineHeight: '1.5',
+                borderRadius: 'var(--radius-sm)',
+                overflow: 'hidden',
+                position: 'relative'
+              }}
+            >
+              {tokens.map((line, i) => (
+                <div key={i} {...getLineProps({ line, key: i })}>
+                  {line.map((token, key) => (
+                    <span key={key} {...getTokenProps({ token, key })} />
+                  ))}
+                </div>
+              ))}
+            </pre>
+          )}
+        </Highlight>
       </div>
 
       <div className="card-footer">

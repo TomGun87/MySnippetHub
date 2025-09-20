@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
 import { validateSnippet, generateTagColor } from '../utils';
+import SnippetEditor from './SnippetEditor';
 
 const AddSnippetModal = ({ snippet, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -210,15 +211,21 @@ const AddSnippetModal = ({ snippet, onClose, onSave }) => {
           {/* Content */}
           <div className="form-group mb-4">
             <label className="form-label">Content *</label>
-            <textarea
-              name="content"
-              className={`input textarea ${errors.content ? 'error' : ''}`}
-              placeholder="Paste your code or AI response here..."
-              value={formData.content}
-              onChange={handleInputChange}
-              rows="12"
-              required
-            />
+            <div className={`editor-wrapper ${errors.content ? 'error' : ''}`}>
+              <SnippetEditor
+                initialCode={formData.content}
+                language={formData.language}
+                onChange={(newContent) => {
+                  setFormData(prev => ({ ...prev, content: newContent }));
+                  if (errors.content) {
+                    setErrors(prev => ({ ...prev, content: null }));
+                  }
+                }}
+                height="400px"
+                showPreview={true}
+                showMinimap={false}
+              />
+            </div>
             {errors.content && (
               <div className="error-text text-error text-sm mt-1">{errors.content}</div>
             )}

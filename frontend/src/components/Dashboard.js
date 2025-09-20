@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Highlight, themes } from 'prism-react-renderer';
 import api from '../api';
 import { debounce, searchSnippets, filterSnippets, sortSnippets } from '../utils';
 import SnippetCard from './SnippetCard';
@@ -326,9 +327,38 @@ const Dashboard = () => {
               ))}
             </div>
             
-            <pre className="bg-tertiary p-4 rounded mb-4 overflow-auto max-h-96">
-              <code>{selectedSnippet.content}</code>
-            </pre>
+            <div className="mb-4">
+              <Highlight
+                theme={themes.vsDark}
+                code={selectedSnippet.content}
+                language={selectedSnippet.language || 'text'}
+              >
+                {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                  <pre 
+                    className={`${className} modal-code-preview`}
+                    style={{
+                      ...style,
+                      margin: 0,
+                      padding: 'var(--space-md)',
+                      fontSize: 'var(--font-size-sm)',
+                      lineHeight: '1.6',
+                      borderRadius: 'var(--radius-md)',
+                      overflow: 'auto',
+                      maxHeight: '24rem',
+                      border: '1px solid var(--border-primary)'
+                    }}
+                  >
+                    {tokens.map((line, i) => (
+                      <div key={i} {...getLineProps({ line, key: i })}>
+                        {line.map((token, key) => (
+                          <span key={key} {...getTokenProps({ token, key })} />
+                        ))}
+                      </div>
+                    ))}
+                  </pre>
+                )}
+              </Highlight>
+            </div>
 
             <div className="flex gap-2">
               <button 

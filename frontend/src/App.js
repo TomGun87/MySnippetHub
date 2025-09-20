@@ -34,7 +34,12 @@ function App() {
           }}
         />
         
-        <Navbar />
+        <Navbar 
+          onImportSuccess={(results) => {
+            // Handle import success - you can add global state updates here if needed
+            console.log('Import completed:', results);
+          }}
+        />
         
         <main className="main-content">
           <Routes>

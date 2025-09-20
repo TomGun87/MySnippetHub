@@ -2,6 +2,8 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const database = require('../db');
 const { createTwoFilesPatch } = require('diff');
+const multer = require('multer');
+const exportImportService = require('../services/exportImport');
 
 const router = express.Router();
 
@@ -348,6 +350,130 @@ router.get('/:id/diff/:version', async (req, res) => {
   } catch (error) {
     console.error('Error generating diff:', error);
     res.status(500).json({ error: 'Failed to generate diff' });
+  }
+});
+
+// Configure multer for file uploads
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/json' || file.originalname.endsWith('.json')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only JSON files are allowed'), false);
+    }
+  }
+});
+
+// GET /api/snippets/export - Export snippets
+router.get('/export', async (req, res) => {
+  try {
+    const { type = 'json', ids } = req.query;
+    
+    let snippetIds = [];
+    if (ids) {
+      snippetIds = ids.split(',').map(id => parseInt(id)).filter(id => !isNaN(id));
+    }
+
+    if (type === 'json') {
+      const exportData = await exportImportService.exportToJSON(snippetIds);
+      
+      const filename = `mysnippethub-export-${new Date().toISOString().slice(0, 10)}.json`;
+      
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.json(exportData);
+      
+    } else if (type === 'md' || type === 'markdown') {
+      const markdownContent = await exportImportService.exportToMarkdown(snippetIds);
+      
+      const filename = `mysnippethub-export-${new Date().toISOString().slice(0, 10)}.md`;
+      
+      res.setHeader('Content-Type', 'text/markdown');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.send(markdownContent);
+      
+    } else {
+      return res.status(400).json({ error: 'Invalid export type. Use "json" or "md".' });
+    }
+    
+  } catch (error) {
+    console.error('Error exporting snippets:', error);
+    res.status(500).json({ error: 'Failed to export snippets' });
+  }
+});
+
+// POST /api/snippets/import - Import snippets
+router.post('/import', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    let importData;
+    try {
+      importData = JSON.parse(req.file.buffer.toString('utf8'));
+    } catch (parseError) {
+      return res.status(400).json({ error: 'Invalid JSON file format' });
+    }
+
+    // Validate import data
+    const validation = exportImportService.validateImportData(importData);
+    if (!validation.valid) {
+      return res.status(400).json({ 
+        error: 'Import validation failed',
+        details: validation.errors,
+        warnings: validation.warnings
+      });
+    }
+
+    // Parse import options from request body
+    const options = {
+      overwriteExisting: req.body.overwriteExisting === 'true',
+      skipDuplicates: req.body.skipDuplicates !== 'false', // default true
+      preserveIds: req.body.preserveIds === 'true'
+    };
+
+    // Perform import
+    const results = await exportImportService.importFromJSON(importData, options);
+
+    res.json({
+      message: 'Import completed',
+      results: results,
+      validation: {
+        warnings: validation.warnings,
+        stats: validation.stats
+      }
+    });
+
+  } catch (error) {
+    console.error('Error importing snippets:', error);
+    res.status(500).json({ error: `Import failed: ${error.message}` });
+  }
+});
+
+// POST /api/snippets/validate-import - Validate import file without importing
+router.post('/validate-import', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    let importData;
+    try {
+      importData = JSON.parse(req.file.buffer.toString('utf8'));
+    } catch (parseError) {
+      return res.status(400).json({ error: 'Invalid JSON file format' });
+    }
+
+    const validation = exportImportService.validateImportData(importData);
+    
+    res.json(validation);
+
+  } catch (error) {
+    console.error('Error validating import file:', error);
+    res.status(500).json({ error: 'Failed to validate import file' });
   }
 });
 

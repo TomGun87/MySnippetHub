@@ -101,6 +101,62 @@ export const snippetsAPI = {
   getDiff: async (id, versionNumber) => {
     return apiRequest(`/api/snippets/${id}/diff/${versionNumber}`);
   },
+
+  // Export snippets
+  export: async (format = 'json', snippetIds = []) => {
+    const params = new URLSearchParams();
+    params.append('type', format);
+    if (snippetIds.length > 0) {
+      params.append('ids', snippetIds.join(','));
+    }
+    
+    const url = `${API_BASE_URL}/api/snippets/export?${params.toString()}`;
+    
+    // Use fetch directly for file downloads
+    const response = await fetch(url);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Export failed' }));
+      throw new Error(errorData.error || `HTTP ${response.status}`);
+    }
+    
+    return response;
+  },
+
+  // Import snippets
+  import: async (file, options = {}) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    // Add options to form data
+    Object.entries(options).forEach(([key, value]) => {
+      formData.append(key, value.toString());
+    });
+    
+    const result = await apiRequest('/api/snippets/import', {
+      method: 'POST',
+      headers: {}, // Remove Content-Type for FormData
+      body: formData,
+    });
+    
+    toast.success(`Import completed: ${result.results.success} snippets imported`);
+    if (result.results.errors > 0) {
+      toast.error(`${result.results.errors} snippets failed to import`);
+    }
+    
+    return result;
+  },
+
+  // Validate import file
+  validateImport: async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    return apiRequest('/api/snippets/validate-import', {
+      method: 'POST',
+      headers: {}, // Remove Content-Type for FormData
+      body: formData,
+    });
+  },
 };
 
 // Tags API

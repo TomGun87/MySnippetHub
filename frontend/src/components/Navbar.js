@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import ExportModal from './ExportModal';
+import ImportModal from './ImportModal';
 
-const Navbar = () => {
+const Navbar = ({ selectedSnippets = [], onImportSuccess }) => {
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
+
+  const handleImportSuccess = (results) => {
+    if (onImportSuccess) {
+      onImportSuccess(results);
+    }
+  };
+
   return (
     <nav className="navbar">
       <div className="container">
@@ -36,12 +47,44 @@ const Navbar = () => {
             </NavLink>
           </div>
 
+          {/* Export/Import Actions */}
+          <div className="navbar-actions">
+            <button 
+              className="btn btn-outline btn-sm navbar-btn"
+              onClick={() => setShowExportModal(true)}
+              title="Export snippets to JSON or Markdown"
+            >
+              📤 Export
+            </button>
+            <button 
+              className="btn btn-secondary btn-sm navbar-btn"
+              onClick={() => setShowImportModal(true)}
+              title="Import snippets from file"
+            >
+              📥 Import
+            </button>
+          </div>
+
           {/* Version Badge */}
           <div className="navbar-end">
-            <span className="badge">v1.0.0</span>
+            <span className="badge">v1.1.0</span>
           </div>
         </div>
       </div>
+
+      {/* Export Modal */}
+      <ExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        selectedSnippets={selectedSnippets}
+      />
+
+      {/* Import Modal */}
+      <ImportModal
+        isOpen={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        onImportSuccess={handleImportSuccess}
+      />
     </nav>
   );
 };
