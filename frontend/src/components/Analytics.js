@@ -76,8 +76,11 @@ const Analytics = () => {
 
   useEffect(() => {
     fetchAnalytics();
+  }, [fetchAnalytics]);
+
+  useEffect(() => {
     fetchTrends(trendPeriod);
-  }, [fetchAnalytics, fetchTrends, trendPeriod]);
+  }, [fetchTrends, trendPeriod]);
 
   // Handle period change for trends
   const handlePeriodChange = (period) => {
@@ -221,7 +224,7 @@ const Analytics = () => {
       {/* Summary Bar - Compact */}
       {overview && (
         <div className="analytics-summary card mb-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-border-primary">
+          <div className="grid grid-cols-2 lg:grid-cols-4">
             <div className="p-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <span className="text-lg">📝</span>
@@ -338,7 +341,7 @@ const Analytics = () => {
       </div>
 
       {/* Lower Section - Tag Cloud and Activity */}
-      <div className="insights-grid grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="insights-grid grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         
         {/* Tag Cloud */}
         <div className="card p-4">
@@ -404,7 +407,7 @@ const Analytics = () => {
 
       {/* Monthly Growth Chart */}
       {overview?.monthly_growth && overview.monthly_growth.length > 0 && (
-        <div className="card p-4 mt-6">
+        <div className="card p-4 mb-6">
           <h3 className="text-lg font-semibold mb-3">📊 Monthly Growth</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={overview.monthly_growth.slice(-12)}>
@@ -425,7 +428,7 @@ const Analytics = () => {
 
       {/* Search Insights */}
       {searchInsights && (
-        <div className="card p-4 mt-6">
+        <div className="card p-4">
           <h3 className="text-lg font-semibold mb-3">🔍 Search Insights</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center">
