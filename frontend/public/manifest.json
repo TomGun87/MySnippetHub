@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "MySnippetHub",
+  "name": "MySnippetHub - Code Snippet Manager",
+  "description": "A modern web application for managing and organizing your code snippets",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +21,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#00d4ff",
+  "background_color": "#0f0f0f",
+  "categories": ["productivity", "developer", "utilities"]
 }
