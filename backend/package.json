@@ -1,0 +1,28 @@
+{
+  "name": "mysnippethub-backend",
+  "version": "1.0.0",
+  "description": "Backend API for MySnippetHub application",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "express",
+    "sqlite",
+    "api",
+    "snippets"
+  ],
+  "author": "Tom Vervecken",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "diff": "^8.0.2",
+    "dotenv": "^17.2.2",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "nodemon": "^3.1.10",
+    "sqlite3": "^5.1.7"
+  }
+}
