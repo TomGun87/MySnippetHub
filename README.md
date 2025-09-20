@@ -1,13 +1,19 @@
-# MySnippetHub 📝
+<div align="center">
+  <img src="frontend/public/app-icon.svg" alt="MySnippetHub" width="120" height="120" />
+  
+  # MySnippetHub
+  
+  **A modern, full-stack snippet management application built with React, Node.js, Express, and SQLite.**
+  
+  ![MySnippetHub](https://img.shields.io/badge/version-1.1.0-brightgreen)
+  ![License](https://img.shields.io/badge/license-MIT-blue)
+  ![Node.js](https://img.shields.io/badge/node.js-v21.2.0-green)
+  ![React](https://img.shields.io/badge/react-19.1.1-blue)
+  ![Status](https://img.shields.io/badge/status-production%20ready-brightgreen)
+  ![Build](https://img.shields.io/badge/build-passing-success)
+</div>
 
-A modern, full-stack snippet management application built with React, Node.js, Express, and SQLite.
-
-![MySnippetHub](https://img.shields.io/badge/version-1.0.0-brightgreen)
-![License](https://img.shields.io/badge/license-MIT-blue)
-![Node.js](https://img.shields.io/badge/node.js-v21.2.0-green)
-![React](https://img.shields.io/badge/react-19.1.1-blue)
-![Status](https://img.shields.io/badge/status-production%20ready-brightgreen)
-![Build](https://img.shields.io/badge/build-passing-success)
+---
 
 ## ✨ Features
 
@@ -135,6 +141,11 @@ MySnippetHub/
 │   │   │   └── index.js      # Backend communication
 │   │   └── utils/            # Utility functions
 │   │       └── index.js      # Helpers & formatters
+│   ├── public/               # Static assets
+│   │   ├── app-icon.svg      # Custom brand icon
+│   │   ├── favicon.ico       # Multi-resolution favicon
+│   │   ├── logo192.png       # PWA icon 192x192
+│   │   └── logo512.png       # PWA icon 512x512
 │   ├── package.json
 │   └── .env                  # Frontend config
 │
@@ -332,7 +343,7 @@ CORS_ORIGIN=https://your-frontend-domain.com
 ```env
 REACT_APP_API_URL=https://your-api-domain.com
 REACT_APP_APP_NAME=MySnippetHub
-REACT_APP_VERSION=1.0.0
+REACT_APP_VERSION=1.1.0
 ```
 
 ## 🤝 Contributing
@@ -372,22 +383,7 @@ If you encounter any issues or need support:
 
 ## 🏗️ Development Status
 
-### ✅ Version 1.0.0 (Current - Production Ready)
-**Released: September 2025**
-
-**Core Features Implemented:**
-- ✅ Full CRUD operations for snippets
-- ✅ Real-time search across all content
-- ✅ Advanced tagging system with suggestions
-- ✅ Favorites and bookmarking
-- ✅ Multi-language syntax highlighting
-- ✅ Dark theme with responsive design
-- ✅ Toast notifications and smooth UX
-- ✅ SQLite database with auto-initialization
-- ✅ REST API with comprehensive validation
-- ✅ Development environment with hot-reload
-
-### ✅ Version 1.1.0 (Released)
+### ✅ Version 1.1.0 (Current - Production Ready)
 **Released: September 2025**
 
 **Major New Features:**
@@ -411,14 +407,10 @@ If you encounter any issues or need support:
   - Beautiful syntax highlighting in modals
   - Consistent theming with dark mode support
 
-**Implementation Status:**
-- ✅ Monaco editor integration complete
-- ✅ Live preview implementation complete  
-- ✅ Backend export/import endpoints complete
-- ✅ File handling and validation complete
-- ✅ Bulk operations UI complete
-- ⏳ Analytics integration pending
-- ⏳ Testing and QA pending
+- ✅ **Custom Brand Identity**
+  - Professional app icons with gradient design
+  - Custom favicon and PWA icons
+  - MySnippetHub branding throughout
 
 ### 🔮 Future Roadmap (Version 1.2+)
 
@@ -455,16 +447,12 @@ If you encounter any issues or need support:
   - Offline functionality
   - Mobile-optimized interface
 
-## 📊 Version History
-
-### v1.0.0 - Foundation Release
-- Complete full-stack implementation
-- All core features operational
-- Production-ready codebase
-- Comprehensive documentation
-
 ---
 
-**Built with ❤️ by Tom Vervecken**
-
-*Ready to revolutionize your snippet management! 🚀*
+<div align="center">
+  <img src="frontend/public/app-icon.svg" alt="MySnippetHub" width="60" height="60" />
+  
+  **Built with ❤️ by Tom Vervecken**
+  
+  *Ready to revolutionize your snippet management! 🚀*
+</div>
