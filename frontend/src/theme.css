@@ -791,6 +791,115 @@ pre {
   box-shadow: var(--shadow-xl);
 }
 
+.snippet-card-selected {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2), var(--shadow-lg);
+  background: linear-gradient(135deg, 
+    rgba(0, 212, 255, 0.05) 0%, 
+    rgba(139, 92, 246, 0.05) 100%);
+}
+
+/* Custom Professional Checkbox */
+.custom-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.custom-checkbox:hover {
+  transform: scale(1.1);
+}
+
+.checkbox-inner {
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--border-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.custom-checkbox:hover .checkbox-inner {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.2);
+}
+
+.custom-checkbox-checked .checkbox-inner {
+  background: var(--gradient-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+.checkbox-check {
+  width: 12px;
+  height: 12px;
+  color: #000000;
+  animation: checkboxPop 0.2s ease-out;
+}
+
+@keyframes checkboxPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Checkbox inner glow effect */
+.custom-checkbox-checked .checkbox-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, 
+    rgba(0, 212, 255, 0.2) 0%, 
+    rgba(139, 92, 246, 0.2) 100%);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Checkbox ripple effect */
+.custom-checkbox:active {
+  transform: scale(0.95);
+}
+
+.custom-checkbox:active .checkbox-inner {
+  transform: scale(0.9);
+}
+
+/* Enhanced focus state for accessibility */
+.custom-checkbox:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Smooth transition for all states */
+.custom-checkbox * {
+  transition: inherit;
+}
+
 .snippet-actions {
   opacity: 0;
   transition: opacity var(--transition-fast);

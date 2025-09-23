@@ -5,7 +5,7 @@ import { debounce, searchSnippets, filterSnippets, sortSnippets } from '../utils
 import SnippetCard from './SnippetCard';
 import AddSnippetModal from './AddSnippetModal';
 
-const Dashboard = () => {
+const Dashboard = ({ selectedSnippets = [], onSnippetSelection, refreshKey }) => {
   // State
   const [snippets, setSnippets] = useState([]);
   const [filteredSnippets, setFilteredSnippets] = useState([]);
@@ -127,10 +127,37 @@ const Dashboard = () => {
     await fetchSnippets();
   };
 
+  // Selection handlers
+  const handleSnippetSelect = (snippet, isSelected) => {
+    let newSelection;
+    if (isSelected) {
+      newSelection = [...selectedSnippets, snippet];
+    } else {
+      newSelection = selectedSnippets.filter(s => s.id !== snippet.id);
+    }
+    onSnippetSelection?.(newSelection);
+  };
+
+  const handleSelectAll = () => {
+    if (selectedSnippets.length === filteredSnippets.length) {
+      onSnippetSelection?.([]);
+    } else {
+      onSnippetSelection?.(filteredSnippets);
+    }
+  };
+
+  const handleClearSelection = () => {
+    onSnippetSelection?.([]);
+  };
+
+  const isSnippetSelected = (snippet) => {
+    return selectedSnippets.some(s => s.id === snippet.id);
+  };
+
   // Effects
   useEffect(() => {
     fetchSnippets();
-  }, [fetchSnippets]);
+  }, [fetchSnippets, refreshKey]);
 
   useEffect(() => {
     applyFilters(searchQuery, filters, sortBy, sortOrder);
@@ -175,6 +202,11 @@ const Dashboard = () => {
             <h2 className="text-xl font-bold mb-2">My Snippets</h2>
             <p className="text-muted">
               {filteredSnippets.length} of {snippets.length} snippets
+              {selectedSnippets.length > 0 && (
+                <span className="text-accent ml-2">
+                  • {selectedSnippets.length} selected
+                </span>
+              )}
             </p>
           </div>
           <div className="flex gap-4">
@@ -212,32 +244,57 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Basic Filter Buttons */}
-      <div className="filter-buttons flex gap-2 mb-6">
-        <button
-          className={`btn btn-sm ${filters.favorites ? 'btn-secondary' : 'btn-ghost'}`}
-          onClick={() => {
-            const newFilters = { ...filters, favorites: !filters.favorites };
-            setFilters(newFilters);
-            applyFilters(searchQuery, newFilters, sortBy, sortOrder);
-          }}
-        >
-          ⭐ Favorites Only
-        </button>
-        <select
-          className="input"
-          style={{ width: 'auto', padding: '0.25rem 0.5rem' }}
-          value={sortBy}
-          onChange={(e) => {
-            setSortBy(e.target.value);
-            applyFilters(searchQuery, filters, e.target.value, sortOrder);
-          }}
-        >
-          <option value="created_at">Recently Added</option>
-          <option value="updated_at">Recently Modified</option>
-          <option value="title">Title A-Z</option>
-          <option value="language">Language</option>
-        </select>
+      {/* Filter and Selection Controls */}
+      <div className="controls-bar flex justify-between items-center mb-6">
+        <div className="filter-buttons flex gap-2">
+          <button
+            className={`btn btn-sm ${filters.favorites ? 'btn-secondary' : 'btn-ghost'}`}
+            onClick={() => {
+              const newFilters = { ...filters, favorites: !filters.favorites };
+              setFilters(newFilters);
+              applyFilters(searchQuery, newFilters, sortBy, sortOrder);
+            }}
+          >
+            ⭐ Favorites Only
+          </button>
+          <select
+            className="input"
+            style={{ width: 'auto', padding: '0.25rem 0.5rem' }}
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              applyFilters(searchQuery, filters, e.target.value, sortOrder);
+            }}
+          >
+            <option value="created_at">Recently Added</option>
+            <option value="updated_at">Recently Modified</option>
+            <option value="title">Title A-Z</option>
+            <option value="language">Language</option>
+          </select>
+        </div>
+        
+        {/* Selection Controls */}
+        {filteredSnippets.length > 0 && (
+          <div className="selection-controls flex gap-2">
+            <button
+              className="btn btn-sm btn-ghost"
+              onClick={handleSelectAll}
+              title={selectedSnippets.length === filteredSnippets.length ? 'Clear Selection' : 'Select All Visible'}
+            >
+              {selectedSnippets.length === filteredSnippets.length ? '☐' : '☑'} 
+              {selectedSnippets.length === filteredSnippets.length ? 'Deselect All' : 'Select All'}
+            </button>
+            {selectedSnippets.length > 0 && (
+              <button
+                className="btn btn-sm btn-ghost text-muted"
+                onClick={handleClearSelection}
+                title="Clear Selection"
+              >
+                ✕ Clear
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Snippets Grid or Empty State */}
@@ -279,6 +336,8 @@ const Dashboard = () => {
             <SnippetCard
               key={snippet.id}
               snippet={snippet}
+              isSelected={isSnippetSelected(snippet)}
+              onSelect={(isSelected) => handleSnippetSelect(snippet, isSelected)}
               onClick={() => handleSnippetClick(snippet)}
               onEdit={() => handleEditSnippet(snippet)}
               onDelete={() => handleDeleteSnippet(snippet.id)}

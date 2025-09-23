@@ -4,6 +4,8 @@ import { getLanguageColor, getCodePreview, formatDate, copyToClipboard, getContr
 
 const SnippetCard = ({ 
   snippet, 
+  isSelected = false,
+  onSelect,
   onClick, 
   onEdit, 
   onDelete, 
@@ -31,11 +33,56 @@ const SnippetCard = ({
     }
   };
 
+  const handleSelect = (e) => {
+    e.stopPropagation();
+    onSelect?.(!isSelected);
+  };
+
+  const handleCheckboxKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.stopPropagation();
+      onSelect?.(!isSelected);
+    }
+  };
+
   return (
-    <div className="card snippet-card" onClick={onClick}>
+    <div className={`card snippet-card ${isSelected ? 'snippet-card-selected' : ''}`} onClick={onClick}>
       <div className="card-header">
         <div className="flex justify-between items-start mb-2">
-          <h3 className="card-title">{snippet.title}</h3>
+          <div className="flex items-center gap-2">
+            {onSelect && (
+              <div
+                className={`custom-checkbox ${isSelected ? 'custom-checkbox-checked' : ''}`}
+                onClick={handleSelect}
+                onKeyDown={handleCheckboxKeyDown}
+                role="checkbox"
+                aria-checked={isSelected}
+                tabIndex={0}
+                title={isSelected ? 'Deselect snippet' : 'Select snippet'}
+              >
+                <div className="checkbox-inner">
+                  {isSelected && (
+                    <svg 
+                      className="checkbox-check" 
+                      viewBox="0 0 16 16" 
+                      fill="none" 
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path 
+                        d="M13.5 4.5L6 12L2.5 8.5" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </div>
+              </div>
+            )}
+            <h3 className="card-title">{snippet.title}</h3>
+          </div>
           <div className="snippet-actions flex gap-1">
             <button
               className={`btn btn-sm btn-ghost ${snippet.is_favorite ? 'text-accent' : ''}`}
